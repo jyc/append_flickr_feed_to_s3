@@ -1,0 +1,24 @@
+#!/bin/bash
+set -euo pipefail
+
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+cd "$SCRIPT_DIR"
+
+FORCE=0
+while getopts ":f" opt; do
+	case $opt in
+	f) FORCE=1 ;;
+	esac
+done
+
+case $FORCE in
+0)
+	# cut -c3- to remove the leading "./" from the filenames returned by find
+	comm -12 <(find . -name '*.ex' -o -name '*.exs' | cut -c3- | sort) \
+		<(git diff --relative --name-only HEAD) |
+		while read file; do
+			mix format "$file"
+		done
+	;;
+1) mix format mix.exs .credo.exs "lib/**/*.{ex,exs}" ;;
+esac

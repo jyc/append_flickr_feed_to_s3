@@ -1,0 +1,14 @@
+#!/bin/bash
+
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+
+if ! ping -q -c1 jyc-static.com &>/dev/null; then
+  echo "Offline; skipping."
+  exit 0
+fi
+
+if [ -f .env ]; then
+  export $(cat .env | xargs)
+fi
+
+exec "$SCRIPT_DIR/burrito_out/append_flickr_feed_to_s3_macos" "$@"

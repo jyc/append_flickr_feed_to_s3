@@ -1,0 +1,4 @@
+#!/bin/sh
+# Launches an iex REPL with access to dependencies but without starting the
+# application.
+iex -S mix run --no-start

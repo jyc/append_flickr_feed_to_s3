@@ -1,0 +1,3 @@
+#!/bin/bash
+MIX_ENV=prod mix release --overwrite
+yes | burrito_out/append_flickr_feed_to_s3_macos maintenance uninstall
