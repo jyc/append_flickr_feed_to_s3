@@ -18,4 +18,4 @@ append_flickr_feed_to_s3-*.tar
 /tmp/
 .env
 Session.vim
-burrito_out/
+burrito_out/*
