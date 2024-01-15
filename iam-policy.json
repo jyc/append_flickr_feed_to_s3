@@ -6,9 +6,13 @@
       "Effect": "Allow",
       "Action": [
         "s3:GetObject",
-        "s3:PutObject"
+        "s3:PutObject",
+        "cloudfront:CreateInvalidation"
       ],
-      "Resource": "arn:aws:s3:::jyc-static.com/flickr-photos.json"
+      "Resource": [
+        "arn:aws:s3:::BUCKET/KEY",
+        "arn:aws:cloudfront::ACCOUNT:distribution/DISTRIBUTION"
+      ]
     }
   ]
 }

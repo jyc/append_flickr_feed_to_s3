@@ -15,12 +15,14 @@ defmodule AppendFlickrFeedToS3.Application do
   end
 
   def run! do
+    access_key_id = System.get_env("AWS_ACCESS_KEY_ID")
+    access_key = System.get_env("AWS_SECRET_ACCESS_KEY")
     region = System.get_env("AWS_REGION")
     bucket = System.get_env("AWS_S3_BUCKET")
     key = System.get_env("AWS_S3_KEY")
     flickr_feed = System.get_env("FLICKR_FEED")
-    access_key_id = System.get_env("AWS_ACCESS_KEY_ID")
-    access_key = System.get_env("AWS_SECRET_ACCESS_KEY")
+    cloudfront_distribution_id = System.get_env("AWS_CLOUDFRONT_DISTRIBUTION_ID")
+    cloudfront_path = System.get_env("AWS_CLOUDFRONT_PATH")
 
     IO.puts("Connecting using #{access_key_id}...")
 
@@ -55,9 +57,21 @@ defmodule AppendFlickrFeedToS3.Application do
       {:ok, _, _} =
         AWS.S3.put_object(aws, bucket, key, %{
           "Body" => json,
+          # "CacheControl" => "max-age=31536000",
           "ContentMD5" => md5,
           "ContentEncoding" => "utf8",
           "ContentType" => "application/json"
+        })
+
+      {:ok, _, _} =
+        AWS.CloudFront.create_invalidation(aws, cloudfront_distribution_id, %{
+          "InvalidationBatch" => %{
+            "CallerReference" => DateTime.utc_now() |> to_string,
+            "Paths" => %{
+              "Quantity" => 1,
+              "Items" => [%{"Path" => cloudfront_path}]
+            }
+          }
         })
     end
   end
