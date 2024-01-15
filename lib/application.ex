@@ -52,13 +52,13 @@ defmodule AppendFlickrFeedToS3.Application do
       json = Jason.encode!(photos)
       md5 = :crypto.hash(:md5, json) |> Base.encode64()
 
-      AWS.S3.put_object(aws, bucket, key, %{
-        "Body" => json,
-        "ContentMD5" => md5,
-        "ACL" => "public-read",
-        "ContentEncoding" => "utf8",
-        "ContentType" => "application/json"
-      })
+      {:ok, _, _} =
+        AWS.S3.put_object(aws, bucket, key, %{
+          "Body" => json,
+          "ContentMD5" => md5,
+          "ContentEncoding" => "utf8",
+          "ContentType" => "application/json"
+        })
     end
   end
 end

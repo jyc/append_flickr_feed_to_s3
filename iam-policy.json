@@ -6,7 +6,7 @@
       "Effect": "Allow",
       "Action": [
         "s3:GetObject",
-        "s3:PutObjectAcl"
+        "s3:PutObject"
       ],
       "Resource": "arn:aws:s3:::jyc-static.com/flickr-photos.json"
     }
